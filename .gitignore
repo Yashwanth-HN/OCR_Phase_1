@@ -12,6 +12,27 @@ dist
 dist-ssr
 *.local
 
+# Python cache/virtual env
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Notebook metadata
+.ipynb_checkpoints/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local OCR model artifacts (keep placeholders only)
+backend/models/*.pth
+backend/models/*.pt
+backend/models/*.onnx
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

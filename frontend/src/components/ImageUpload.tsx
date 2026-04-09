@@ -3,30 +3,34 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ImageUploadProps {
-  onUpload: (file: File, preview: string) => void;
+  onUpload: (file: File, preview: string) => Promise<void>;
+  isProcessing?: boolean;
+  resultText?: string;
+  resultConfidence?: number | null;
+  errorText?: string;
 }
 
-const ImageUpload = ({ onUpload }: ImageUploadProps) => {
+const ImageUpload = ({ onUpload, isProcessing = false, resultText = "", resultConfidence = null, errorText = "" }: ImageUploadProps) => {
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
       const url = URL.createObjectURL(file);
       setPreview(url);
-      onUpload(file, url);
+      await onUpload(file, url);
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
-    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files[0]) await handleFile(e.dataTransfer.files[0]);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) handleFile(e.target.files[0]);
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) await handleFile(e.target.files[0]);
   };
 
   const clearPreview = () => {
@@ -59,8 +63,17 @@ const ImageUpload = ({ onUpload }: ImageUploadProps) => {
             </button>
             <div className="px-4 pb-4">
               <p className="text-sm text-muted-foreground">
-                Image uploaded — OCR processing would extract Kannada text here.
+                {isProcessing
+                  ? "Processing image..."
+                  : resultText
+                    ? `Predicted text: ${resultText}${resultConfidence !== null ? ` (Confidence: ${Math.round(resultConfidence * 100)}%)` : ""}`
+                    : "Image uploaded. Click X to try another image."}
               </p>
+              {!!errorText && (
+                <p className="text-sm text-destructive mt-2">
+                  {errorText}
+                </p>
+              )}
             </div>
           </motion.div>
         ) : (
@@ -71,8 +84,8 @@ const ImageUpload = ({ onUpload }: ImageUploadProps) => {
             exit={{ opacity: 0 }}
             onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
             onDragLeave={() => setDragActive(false)}
-            onDrop={handleDrop}
-            onClick={() => inputRef.current?.click()}
+            onDrop={(e) => { void handleDrop(e); }}
+            onClick={() => { if (!isProcessing) inputRef.current?.click(); }}
             className={`cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition-all ${
               dragActive
                 ? "border-primary bg-primary/5 shadow-elevated"
@@ -100,8 +113,9 @@ const ImageUpload = ({ onUpload }: ImageUploadProps) => {
               ref={inputRef}
               type="file"
               accept="image/*"
-              onChange={handleChange}
+              onChange={(e) => { void handleChange(e); }}
               className="hidden"
+              disabled={isProcessing}
             />
           </motion.div>
         )}

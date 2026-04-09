@@ -5,8 +5,14 @@ import ImageUpload from "@/components/ImageUpload";
 import RecentHistory, { HistoryItem } from "@/components/RecentHistory";
 import heroPattern from "@/assets/hero-pattern.jpg";
 import { Languages } from "lucide-react";
+import { uploadOcrImage } from "@/services/ocrApi";
 
 const Index = () => {
+  const [ocrText, setOcrText] = useState("");
+  const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
+  const [ocrError, setOcrError] = useState("");
+  const [ocrLoading, setOcrLoading] = useState(false);
+
   const [history, setHistory] = useState<HistoryItem[]>([
     {
       id: "1",
@@ -43,8 +49,25 @@ const Index = () => {
     addHistoryItem("search", query);
   };
 
-  const handleUpload = (_file: File, preview: string) => {
-    addHistoryItem("upload", `Image uploaded — ${_file.name}`, preview);
+  const handleUpload = async (file: File, preview: string) => {
+    setOcrLoading(true);
+    setOcrError("");
+    setOcrText("");
+    setOcrConfidence(null);
+
+    try {
+      const result = await uploadOcrImage(file);
+      const text = result.text || "(No text detected)";
+      setOcrText(text);
+      setOcrConfidence(result.confidence);
+      addHistoryItem("upload", `${text} (${Math.round(result.confidence * 100)}%)`, preview);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "OCR failed";
+      setOcrError(message);
+      addHistoryItem("upload", `Upload failed — ${file.name}`, preview);
+    } finally {
+      setOcrLoading(false);
+    }
   };
 
   return (
@@ -89,7 +112,13 @@ const Index = () => {
 
           {/* Search & Upload */}
           <SearchBar onSearch={handleSearch} />
-          <ImageUpload onUpload={handleUpload} />
+          <ImageUpload
+            onUpload={handleUpload}
+            isProcessing={ocrLoading}
+            resultText={ocrText}
+            resultConfidence={ocrConfidence}
+            errorText={ocrError}
+          />
         </div>
       </div>
 
