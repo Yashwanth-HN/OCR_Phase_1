@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 35 30% 97%;
+    --foreground: 15 40% 12%;
+
+    --card: 35 25% 95%;
+    --card-foreground: 15 40% 12%;
+
+    --popover: 35 30% 97%;
+    --popover-foreground: 15 40% 12%;
+
+    --primary: 15 72% 45%;
+    --primary-foreground: 35 30% 97%;
+
+    --secondary: 35 35% 88%;
+    --secondary-foreground: 15 40% 18%;
+
+    --muted: 35 20% 92%;
+    --muted-foreground: 15 15% 45%;
+
+    --accent: 40 75% 55%;
+    --accent-foreground: 15 40% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 20% 85%;
+    --input: 30 20% 85%;
+    --ring: 15 72% 45%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(15 72% 45%), hsl(40 75% 55%));
+    --shadow-card: 0 4px 24px -4px hsl(15 72% 45% / 0.1);
+    --shadow-elevated: 0 12px 40px -8px hsl(15 72% 45% / 0.15);
+  }
+
+  .dark {
+    --background: 15 25% 8%;
+    --foreground: 35 25% 92%;
+    --card: 15 20% 12%;
+    --card-foreground: 35 25% 92%;
+    --popover: 15 20% 12%;
+    --popover-foreground: 35 25% 92%;
+    --primary: 40 75% 55%;
+    --primary-foreground: 15 40% 8%;
+    --secondary: 15 15% 18%;
+    --secondary-foreground: 35 25% 90%;
+    --muted: 15 12% 16%;
+    --muted-foreground: 35 15% 55%;
+    --accent: 15 72% 45%;
+    --accent-foreground: 35 30% 97%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 15 12% 20%;
+    --input: 15 12% 20%;
+    --ring: 40 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-kannada {
+    font-family: 'Noto Sans Kannada', sans-serif;
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+}
