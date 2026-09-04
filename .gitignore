@@ -30,6 +30,7 @@ env/
 
 # Local OCR model artifacts (keep placeholders only)
 backend/models/*.pth
+!backend/models/crnn_base.pth
 backend/models/*.pt
 backend/models/*.onnx
 
